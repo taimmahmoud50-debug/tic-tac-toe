@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❌⭕ XO - Taim Games</title>
+</head>
+<body style="background: #1a1a1a; color: white; text-align: center; font-family: Arial; padding: 10px; direction: rtl;">
+    <div style="max-width: 400px; margin: 0 auto;">
+        <h1 style="color: #ffd700;">❌⭕ XO - Taim Games</h1>
+        <p>العب ضد البوت الذكي في لعبة XO!</p>
+
+        <div style="margin: 15px 0;">
+            <button onclick="setBotLevel('easy')" style="background: #27ae60; color: white; border: none; padding: 10px; margin: 5px; border-radius: 10px;">🟢 بوت سهل</button>
+            <button onclick="setBotLevel('medium')" style="background: #f39c12; color: white; border: none; padding: 10px; margin: 5px; border-radius: 10px;">🟡 بوت متوسط</button>
+            <button onclick="setBotLevel('hard')" style="background: #e74c3c; color: white; border: none; padding: 10px; margin: 5px; border-radius: 10px;">🔴 بوت صعب</button>
+        </div>
+
+        <div style="display: flex; justify-content: space-around; margin: 20px 0;">
+            <div style="background: #2c3e50; padding: 10px; border-radius: 10px;">🎯 اللاعب: <span id="currentPlayer">❌</span></div>
+            <div style="background: #2c3e50; padding: 10px; border-radius: 10px;">🔄 الدور: <span id="turnNumber">1</span></div>
+            <div style="background: #2c3e50; padding: 10px; border-radius: 10px;">🤖 المستوى: <span id="botLevel">سهل</span></div>
+        </div>
+
+        <!-- لوحة اللعب -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 20px auto; max-width: 300px;">
+            <div id="cell0" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(0)"></div>
+            <div id="cell1" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(1)"></div>
+            <div id="cell2" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(2)"></div>
+            <div id="cell3" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(3)"></div>
+            <div id="cell4" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(4)"></div>
+            <div id="cell5" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(5)"></div>
+            <div id="cell6" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(6)"></div>
+            <div id="cell7" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(7)"></div>
+            <div id="cell8" style="background: #34495e; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px; cursor: pointer;" onclick="makeMove(8)"></div>
+        </div>
+
+        <div id="gameStatus" style="margin: 15px 0; padding: 10px; border-radius: 10px; background: #2c3e50;">
+            دور اللاعب ❌
+        </div>
+
+        <div style="margin: 20px 0;">
+            <button onclick="restartGame()" style="background: #3498db; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 10px;">🔄 لعبة جديدة</button>
+            <button onclick="switchToPlayer()" style="background: #9b59b6; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 10px;">👥 ضد صديق</button>
+        </div>
+
+        <div style="color: #888; margin-top: 20px;">
+            <p>Developed by Taim 🚀 | © 2025 جميع الحقوق محفوظة</p>
+        </div>
+    </div>
+
+    <!-- شاشة الفلافل -->
+    <div id="falafelScreen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); justify-content: center; align-items: center;">
+        <div style="background: #8B4513; color: white; padding: 30px; border-radius: 15px; text-align: center; border: 3px solid #ffd700;">
+            <h1 style="font-size: 50px;">🥙</h1>
+            <h2 style="color: #ffd700;" id="winTitle">مبروك! فزت بسندويشة فلافل! 🎉</h2>
+            <p id="winnerText">اللاعب ❌ فاز!</p>
+            <p style="color: #ffd700; font-size: 20px;" id="movesCount">عدد الحركات: 5</p>
+            <p id="botLevelText" style="font-size: 14px; margin: 10px 0;"></p>
+            
+            <div style="margin-top: 20px;">
+                <button onclick="restartFalafelGame()" style="background: #27ae60; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 10px;">🎮 لعبة جديدة</button>
+                <button onclick="closeFalafel()" style="background: #3498db; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 10px;">❌ إغلاق</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            board: ['', '', '', '', '', '', '', '', ''],
+            currentPlayer: '❌',
+            gameOver: false,
+            moves: 0,
+            vsBot: true,
+            botLevel: 'easy', // 'easy', 'medium', 'hard'
+            scores: {
+                '❌': 0,
+                '⭕': 0
+            }
+        };
+
+        const winningCombinations = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // صفوف
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // أعمدة
+            [0, 4, 8], [2, 4, 6]             // قطرية
+        ];
+
+        // تعيين مستوى البوت
+        function setBotLevel(level) {
+            gameState.botLevel = level;
+            gameState.vsBot = true;
+            document.getElementById('botLevel').textContent = 
+                level === 'easy' ? 'سهل' : level === 'medium' ? 'متوسط' : 'صعب';
+            initGame();
+        }
+
+        // اللعب ضد صديق
+        function switchToPlayer() {
+            gameState.vsBot = false;
+            document.getElementById('botLevel').textContent = 'لاعبين';
+            initGame();
+        }
+
+        function initGame() {
+            gameState.board = ['', '', '', '', '', '', '', '', ''];
+            gameState.currentPlayer = '❌';
+            gameState.gameOver = false;
+            gameState.moves = 0;
+            
+            updateBoard();
+            updateDisplay();
+        }
+
+        function makeMove(cellIndex) {
+            if (gameState.gameOver || gameState.board[cellIndex] !== '') return;
+
+            gameState.board[cellIndex] = gameState.currentPlayer;
+            gameState.moves++;
+            
+            updateBoard();
+            
+            if (checkWin()) {
+                gameState.scores[gameState.currentPlayer]++;
+                showWinScreen(gameState.currentPlayer);
+                return;
+            }
+            
+            if (gameState.moves === 9) {
+                showWinScreen('تعادل');
+                return;
+            }
+            
+            gameState.currentPlayer = gameState.currentPlayer === '❌' ? '⭕' : '❌';
+            updateDisplay();
+            
+            // حركة البوت
+            if (gameState.vsBot && gameState.currentPlayer === '⭕' && !gameState.gameOver) {
+                setTimeout(() => makeBotMove(), 600);
+            }
+        }
+
+        // حركة البوت الذكي
+        function makeBotMove() {
+            if (gameState.gameOver) return;
+            
+            let move;
+            
+            switch(gameState.botLevel) {
+                case 'easy':
+                    move = getEasyMove();
+                    break;
+                case 'medium':
+                    move = getMediumMove();
+                    break;
+                case 'hard':
+                    move = getHardMove();
+                    break;
+            }
+            
+            if (move !== -1) {
+                makeMove(move);
+            }
+        }
+
+        // بوت سهل (عشوائي)
+        function getEasyMove() {
+            let availableCells = [];
+            for (let i = 0; i < 9; i++) {
+                if (gameState.board[i] === '') {
+                    availableCells.push(i);
+                }
+            }
+            return availableCells.length > 0 ? availableCells[Math.floor(Math.random() * availableCells.length)] : -1;
+        }
+
+        // بوت متوسط (يدافع ويهجم)
+        function getMediumMove() {
+            // 1. حاول تربح إذا أقدر
+            let winMove = findWinningMove('⭕');
+            if (winMove !== -1) return winMove;
+            
+            // 2. امنع الخصم من الربح
+            let blockMove = findWinningMove('❌');
+            if (blockMove !== -1) return blockMove;
+            
+            // 3. مركز أو زوايا
+            const centerAndCorners = [4, 0, 2, 6, 8];
+            for (let pos of centerAndCorners) {
+                if (gameState.board[pos] === '') return pos;
+            }
+            
+            // 4. أي حركة متاحة
+            return getEasyMove();
+        }
+
+        // بوت صعب (مستحيل تخسر)
+        function getHardMove() {
+            // 1. حاول تربح
+            let winMove = findWinningMove('⭕');
+            if (winMove !== -1) return winMove;
+            
+            // 2. امنع الخصم
+            let blockMove = findWinningMove('❌');
+            if (blockMove !== -1) return blockMove;
+            
+            // 3. استراتيجية متقدمة
+            if (gameState.moves === 1 && gameState.board[4] === '') return 4; // مركز
+            
+            // 4. زوايا استراتيجية
+            const corners = [0, 2, 6, 8];
+            const availableCorners = corners.filter(corner => gameState.board[corner] === '');
+            if (availableCorners.length > 0) {
+                return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+            }
+            
+            // 5. أي حركة
+            return getEasyMove();
+        }
+
+        // إيجاد حركة رابحة
+        function findWinningMove(player) {
+            for (let combination of winningCombinations) {
+                const [a, b, c] = combination;
+                const cells = [gameState.board[a], gameState.board[b], gameState.board[c]];
+                
+                // إذا في خليتين للاعب وخلية فارغة
+                if (cells.filter(cell => cell === player).length === 2) {
+                    if (gameState.board[a] === '' && cells[1] === player && cells[2] === player) return a;
+                    if (gameState.board[b] === '' && cells[0] === player && cells[2] === player) return b;
+                    if (gameState.board[c] === '' && cells[0] === player && cells[1] === player) return c;
+                }
+            }
+            return -1;
+        }
+
+        function checkWin() {
+            for (let combination of winningCombinations) {
+                const [a, b, c] = combination;
+                if (gameState.board[a] !== '' && 
+                    gameState.board[a] === gameState.board[b] && 
+                    gameState.board[a] === gameState.board[c]) {
+                    
+                    document.getElementById(`cell${a}`).style.background = '#27ae60';
+                    document.getElementById(`cell${b}`).style.background = '#27ae60';
+                    document.getElementById(`cell${c}`).style.background = '#27ae60';
+                    
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function updateBoard() {
+            for (let i = 0; i < 9; i++) {
+                const cell = document.getElementById(`cell${i}`);
+                cell.textContent = gameState.board[i];
+                if (!gameState.gameOver) {
+                    cell.style.background = '#34495e';
+                }
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('currentPlayer').textContent = gameState.currentPlayer;
+            document.getElementById('turnNumber').textContent = Math.ceil((gameState.moves + 1) / 2);
+            
+            let statusText = `دور اللاعب ${gameState.currentPlayer}`;
+            if (gameState.vsBot && gameState.currentPlayer === '⭕') {
+                statusText = `🤖 البوت (${gameState.botLevel === 'easy' ? 'سهل' : gameState.botLevel === 'medium' ? 'متوسط' : 'صعب'}) يفكر...`;
+            }
+            document.getElementById('gameStatus').textContent = statusText;
+        }
+
+        function restartGame() {
+            initGame();
+        }
+
+        function showWinScreen(winner) {
+            gameState.gameOver = true;
+            
+            const winTitle = document.getElementById('winTitle');
+            const winnerText = document.getElementById('winnerText');
+            const movesCount = document.getElementById('movesCount');
+            const botLevelText = document.getElementById('botLevelText');
+            
+            movesCount.textContent = `عدد الحركات: ${gameState.moves}`;
+            
+            if (gameState.vsBot) {
+                const levelName = gameState.botLevel === 'easy' ? 'سهل' : gameState.botLevel === 'medium' ? 'متوسط' : 'صعب';
+                botLevelText.textContent = `مستوى البوت: ${levelName}`;
+            } else {
+                botLevelText.textContent = '';
+            }
+            
+            if (winner === 'تعادل') {
+                winTitle.textContent = 'تعادل! 😐';
+                winnerText.textContent = 'لا فائز في هذه الجولة';
+            } else {
+                winTitle.textContent = 'مبروك! فزت بسندويشة فلافل! 🎉';
+                if (gameState.vsBot && winner === '⭕') {
+                    winnerText.textContent = '🤖 البوت فاز! حاول مرة أخرى';
+                } else {
+                    winnerText.textContent = `اللاعب ${winner} فاز!`;
+                }
+            }
+            
+            document.getElementById('falafelScreen').style.display = 'flex';
+        }
+
+        function restartFalafelGame() {
+            document.getElementById('falafelScreen').style.display = 'none';
+            initGame();
+        }
+
+        function closeFalafel() {
+            document.getElementById('falafelScreen').style.display = 'none';
+        }
+
+        // بدء اللعبة
+        window.onload = initGame;
+    </script>
+</body>
+</html>
